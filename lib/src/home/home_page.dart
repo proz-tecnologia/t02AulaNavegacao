@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/src/create_note/create_note_page.dart';
 import 'package:todo_app/src/home/home_controller.dart';
 import 'package:todo_app/src/home/home_state.dart';
-import 'package:todo_app/src/login/login_page.dart';
+import 'package:todo_app/utils/app_routes.dart';
 
 import '../../models/note_model.dart';
+
+class HomeArguments {
+  final String name;
+
+  const HomeArguments({required this.name});
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
-    required this.name,
   });
-
-  final String name;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,11 +22,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeController controller;
+  late final String username;
   @override
   void initState() {
-    controller = HomeController(
-      onUpdate: () {
-        setState(() {});
+    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback(
+      (timeStamp) {
+        final args =
+            ModalRoute.of(context)!.settings.arguments as HomeArguments;
+        username = args.name;
+        controller = HomeController(
+          username: username,
+          onUpdate: () {
+            setState(() {});
+          },
+        );
       },
     );
 
@@ -35,16 +46,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TodoApp, bem vindo ${widget.name}'),
+        title: Text('TodoApp, bem vindo $username'),
         actions: [
           IconButton(
               onPressed: () {
                 controller.logout().then(
-                      (value) => Navigator.pushReplacement(
+                      (value) => Navigator.pushReplacementNamed(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const LoginPage(),
-                        ),
+                        AppRoutes.login,
                       ),
                     );
               },
@@ -102,15 +111,13 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
-          final myNote = await Navigator.push<NoteModel?>(
+          final myNote = await Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (_) => const CreateNote(),
-            ),
+            AppRoutes.createNote,
           );
 
           if (myNote != null) {
-            controller.addNote(note: myNote);
+            controller.addNote(note: myNote as NoteModel);
           }
         },
       ),

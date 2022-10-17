@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/models/note_model.dart';
 
 class CreateNote extends StatefulWidget {
+  static const routeName = '/create_note';
+
   const CreateNote({super.key});
 
   @override

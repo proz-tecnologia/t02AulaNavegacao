@@ -1,7 +1,7 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/src/home/home_page.dart';
 import 'package:todo_app/src/login/login_controller.dart';
+import 'package:todo_app/utils/app_routes.dart';
 
 import '../../utils/colors.dart';
 
@@ -39,12 +39,10 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   TextFormField(
                     controller: emailController,
-                    decoration: const InputDecoration(hintText: 'E-mail'),
+                    decoration: const InputDecoration(hintText: 'Login'),
                     validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          !EmailValidator.validate(value)) {
-                        return 'Preencha corretamente o e-mail';
+                      if (value == null || value.isEmpty && value.length >= 6) {
+                        return 'Preencha corretamente o nome de usuário';
                       } else {
                         return null;
                       }
@@ -79,14 +77,10 @@ class _LoginPageState extends State<LoginPage> {
                               password: passwordController.text)
                           .then((value) {
                         Navigator.pop(context);
-
-                        Navigator.pushReplacement(
+                        Navigator.pushReplacementNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const HomePage(
-                              name: 'Alencar',
-                            ),
-                          ),
+                          AppRoutes.home,
+                          arguments: HomeArguments(name: emailController.text),
                         );
                       });
                     }

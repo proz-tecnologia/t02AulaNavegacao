@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/src/authentication/splash_controller.dart';
 import 'package:todo_app/src/authentication/splash_state.dart';
-import 'package:todo_app/src/login/login_page.dart';
+import 'package:todo_app/utils/app_routes.dart';
 
 import '../home/home_page.dart';
 
@@ -21,18 +21,16 @@ class _SplashScreenState extends State<SplashScreen> {
       (value) async {
         controller.isAuthenticated().then((value) {
           if (value.runtimeType == SplashStateAuthenticated) {
-            Navigator.pushReplacement(
+            final state = value as SplashStateAuthenticated;
+            Navigator.pushReplacementNamed(
               context,
-              MaterialPageRoute(
-                builder: (_) => const HomePage(name: 'Alencar'),
-              ),
+              AppRoutes.home,
+              arguments: HomeArguments(name: state.username),
             );
           } else if (value.runtimeType == SplashStateUnauthenticated) {
-            Navigator.pushReplacement(
+            Navigator.pushReplacementNamed(
               context,
-              MaterialPageRoute(
-                builder: (_) => const LoginPage(),
-              ),
+              AppRoutes.login,
             );
           }
         });

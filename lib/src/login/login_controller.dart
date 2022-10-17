@@ -14,7 +14,7 @@ class LoginController {
 
     await Future.delayed(const Duration(seconds: 2));
 
-    await prefs.setBool(SharedPreferencesKeys.hasUser, true);
+    await prefs.setString(SharedPreferencesKeys.userName, email);
 
     return LoginStateSuccess();
   }

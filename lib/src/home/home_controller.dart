@@ -8,6 +8,7 @@ import 'package:todo_app/utils/shared_preferences_keys.dart';
 
 class HomeController {
   final VoidCallback onUpdate;
+  final String username;
   HomeState state = HomeStateEmpty();
 
   List<NoteModel> myNotes = <NoteModel>[];
@@ -16,6 +17,7 @@ class HomeController {
 
   HomeController({
     required this.onUpdate,
+    required this.username,
   }) {
     init();
   }
@@ -33,7 +35,7 @@ class HomeController {
     updateState(HomeStateLoading());
     prefs = await SharedPreferences.getInstance();
 
-    final notes = prefs.getString(SharedPreferencesKeys.notes);
+    final notes = prefs.getString(SharedPreferencesKeys.notes + username);
 
     if (notes != null && notes.isNotEmpty) {
       final decoded = jsonDecode(notes);
@@ -56,7 +58,8 @@ class HomeController {
 
     final myNotesJson = myNotes.map((e) => e.toJson()).toList();
 
-    prefs.setString(SharedPreferencesKeys.notes, jsonEncode(myNotesJson));
+    prefs.setString(
+        SharedPreferencesKeys.notes + username, jsonEncode(myNotesJson));
 
     updateState(HomeStateSuccess());
   }
